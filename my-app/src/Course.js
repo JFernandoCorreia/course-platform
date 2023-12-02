@@ -41,7 +41,9 @@ function Course({ course, onEdit, onDelete }) {
   return (
     <div>
       <h2>{course.name}</h2>
+      <img src={`data:image/jpeg;base64,${course.image}`} alt={course.name} />
       <p>{course.description}</p>
+      {/* Aqui você pode adicionar mais detalhes do curso */}
       <button type="button" onClick={() => setIsEditing(true)}>Editar</button>
       <button type="button" onClick={() => onDelete(course.id)}>Deletar</button>
     </div>
