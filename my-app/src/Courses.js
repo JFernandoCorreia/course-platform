@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Course from './Course';
 
 function Courses() {
   const [courses, setCourses] = useState([]);
@@ -38,6 +39,33 @@ function Courses() {
     }
   };
 
+  const handleEditCourse = async (id, details) => {
+    const response = await fetch(`http://localhost:3000/courses/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(details)
+    });
+    const data = await response.json();
+    if (response.ok) {
+      setCourses((prevCourses) => prevCourses.map((course) => course.id === id ? data : course));
+    } else {
+      console.error(data.error);
+    }
+  };
+
+  const handleDeleteCourse = async (id) => {
+    const response = await fetch(`http://localhost:3000/courses/${id}`, {
+      method: 'DELETE'
+    });
+    if (response.ok) {
+      setCourses((prevCourses) => prevCourses.filter((course) => course.id !== id));
+    } else {
+      console.error(await response.text());
+    }
+  };
+
   return (
     <div>
       <h1>Cursos</h1>
@@ -65,11 +93,7 @@ function Courses() {
         <button type="submit">Criar Curso</button>
       </form>
       {courses.map((course) => (
-        <div key={course.id}>
-          <h2>{course.name}</h2>
-          <p>{course.description}</p>
-          {/* Aqui você pode adicionar mais detalhes do curso */}
-        </div>
+        <Course key={course.id} course={course} onEdit={handleEditCourse} onDelete={handleDeleteCourse} />
       ))}
     </div>
   );
