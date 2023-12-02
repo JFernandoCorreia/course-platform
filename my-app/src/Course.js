@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import Spinner from 'react-spinner-material';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Snackbar from '@material-ui/core/Snackbar';
 
 function Course({ course, onEdit, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -8,6 +10,7 @@ function Course({ course, onEdit, onDelete }) {
   const [category, setCategory] = useState(course.category);
   const [description, setDescription] = useState(course.description);
   const [image, setImage] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const handleImageChange = (event) => {
     setImage(event.target.files[0]);
@@ -23,34 +26,42 @@ function Course({ course, onEdit, onDelete }) {
     if (image) {
       formData.append('image', image);
     }
-    onEdit(course.id, formData);
+    const isSuccess = await onEdit(course.id, formData);
     setIsEditing(false);
+    if (isSuccess) {
+      setOpen(true);
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
   };
 
   if (isEditing) {
-    return <Spinner />; (
+    return (
       <form onSubmit={handleEdit}>
-        {/* Aqui vão os outros campos do formulário */}
-        <label>
-          Imagem:
-          <input type="file" onChange={handleImageChange} />
-        </label>
-        <button type="submit">Salvar</button>
-        <button type="button" onClick={() => setIsEditing(false)}>Cancelar</button>
+        <TextField label="Nome" value={name} onChange={e => setName(e.target.value)} />
+        <TextField label="Professor" value={professor} onChange={e => setProfessor(e.target.value)} />
+        <TextField label="Categoria" value={category} onChange={e => setCategory(e.target.value)} />
+        <TextField label="Descrição" value={description} onChange={e => setDescription(e.target.value)} />
+        <TextField label="Imagem" value={image} onChange={e => setImage(e.target.value)} />
+        <input type="file" onChange={handleImageChange} />
+        <Button type="submit" variant="contained" color="primary">Salvar</Button>
+        <Button type="button" onClick={() => setIsEditing(false)}>Cancelar</Button>
       </form>
     );
   }
-
-  return (
-    <div>
+    return (
+      <div>
       <h2>{course.name}</h2>
       <img src={`data:image/jpeg;base64,${course.image}`} alt={course.name} />
-      <p>{course.description}</p>
-      {/* Aqui você pode adicionar mais detalhes do curso */}
-      <button type="button" onClick={() => setIsEditing(true)}>Editar</button>
-      <button type="button" onClick={() => onDelete(course.id)}>Deletar</button>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose} message="Edição bem-sucedida!" />
     </div>
-  );
-}
+    );
+  }
 
 export default Course;
