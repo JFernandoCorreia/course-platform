@@ -1,5 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
+User.hasMany(Course);
+Course.belongsTo(User);
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
@@ -44,7 +46,7 @@ const Course = sequelize.define('Course', {
     allowNull: false
   },
   image: {
-    type: DataTypes.BLOB,
+    type: DataTypes.STRING,
     allowNull: true
   }
 }, {

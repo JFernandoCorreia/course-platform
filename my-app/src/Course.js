@@ -10,7 +10,6 @@ function Course({ course, onEdit, onDelete }) {
   const [category, setCategory] = useState(course.category);
   const [description, setDescription] = useState(course.description);
   const [image, setImage] = useState(null);
-  const [open, setOpen] = useState(false);
 
   const handleImageChange = (event) => {
     setImage(event.target.files[0]);
@@ -26,11 +25,9 @@ function Course({ course, onEdit, onDelete }) {
     if (image) {
       formData.append('image', image);
     }
-    const isSuccess = await onEdit(course.id, formData);
+    onEdit(course.id, formData);
     setIsEditing(false);
-    if (isSuccess) {
-      setOpen(true);
-    }
+    
   };
 
   const handleClose = (event, reason) => {

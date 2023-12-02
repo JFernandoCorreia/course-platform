@@ -1,7 +1,7 @@
 const express = require('express');
-const { User } = require('./database');
-const bcrypt = require('bcrypt');
+const { User, Course } = require('./database'); // Certifique-se de importar o modelo Course
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt'); // Certifique-se de importar o módulo bcrypt
 const app = express();
 const port = 3000;
 
@@ -26,7 +26,7 @@ app.post('/login', async (req, res) => {
     if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
-    const token = jwt.sign({ userId: user.id }, 'secret');
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET || 'secret');
     res.json({ token });
   } catch (error) {
     res.status(400).json({ error: error.message });
