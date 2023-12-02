@@ -6,31 +6,33 @@ function Course({ course, onEdit, onDelete }) {
   const [professor, setProfessor] = useState(course.professor);
   const [category, setCategory] = useState(course.category);
   const [description, setDescription] = useState(course.description);
+  const [image, setImage] = useState(null);
 
-  const handleEdit = (event) => {
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0]);
+  };
+
+  const handleEdit = async (event) => {
     event.preventDefault();
-    onEdit(course.id, { name, professor, category, description });
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('professor', professor);
+    formData.append('category', category);
+    formData.append('description', description);
+    if (image) {
+      formData.append('image', image);
+    }
+    onEdit(course.id, formData);
     setIsEditing(false);
   };
 
   if (isEditing) {
     return (
       <form onSubmit={handleEdit}>
+        {/* Aqui vão os outros campos do formulário */}
         <label>
-          Nome:
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-        </label>
-        <label>
-          Professor:
-          <input type="text" value={professor} onChange={(e) => setProfessor(e.target.value)} required />
-        </label>
-        <label>
-          Categoria:
-          <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} required />
-        </label>
-        <label>
-          Descrição:
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
+          Imagem:
+          <input type="file" onChange={handleImageChange} />
         </label>
         <button type="submit">Salvar</button>
         <button type="button" onClick={() => setIsEditing(false)}>Cancelar</button>
