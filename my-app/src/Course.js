@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Spinner from 'react-spinner-material';
 
 function Course({ course, onEdit, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -27,7 +28,7 @@ function Course({ course, onEdit, onDelete }) {
   };
 
   if (isEditing) {
-    return (
+    return <Spinner />; (
       <form onSubmit={handleEdit}>
         {/* Aqui vão os outros campos do formulário */}
         <label>
